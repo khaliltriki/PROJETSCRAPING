@@ -26,25 +26,62 @@
     <div class="ml-3 mr-3">
       <div class="row">
         <div class="col-md-12 mt-4 mb-4">
-          <h1>Projet Fédérateur: Scraping Site Web</h1>
+          <img src="../realstate/static/addval.PNG"  alt="addval icon" width="150px">
+          <img src="../realstate/static/pi.png"  alt="addval icon" width="200px" align="right">
+          <center> <h1> Projet Fédérateur: Scraping Site Web</h1></center>
         </div>
+     
       </div>
-      <div class="row">
-        <div class="col-md-1">
+      <div class="row container">
+        <div  class="col-md-1">
           <a
-          href="/"
+          href="/index"
           class="btn btn-primary btn-xs"
           ><i></i>Accueil</a
         >
         </div>
-        <div class="col-md-2">
+        <div class="col-md-2" >
           <a
           href="/scrap"
           class="btn btn-primary btn-xs"
           ><i></i>Scrapper</a
         >
         </div>
-        <div class="col-md-4 mr-2" style="position: absolute;
+        <div class="col-md-2 mr-3 mt-5 mb-2" style="position: absolute;
+        right: 0px;
+        width: 300px;">
+          <div class="input-group  mb-5">
+            <form action="/sup_inf" method="post">
+              {% csrf_token %}
+              <div class="input-group">
+                <input
+                  required
+                  type="number"
+                  name="query"
+                  class="form-control"
+                />
+                <button class="btn btn-primary" type="submit" name="inf">Inf</button>
+                <button class="btn btn-primary" type="submit" name="sup">Sup</button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+        <div class="col-md-2 " style="margin-left: 250px;"  >
+          <a
+          href="/sortbyprice"
+          class="btn btn-primary btn-xs"
+          ><i></i>prix croissant </a
+        >
+        </div>
+        <div class="col-md-2">
+          <a
+          href="/sortby_price"
+          class="btn btn-primary btn-xs"
+          ><i></i>prix decroissant</a
+        >
+        </div>  
+        <div class="col-md-2 mr-3" style="position: absolute;
         right: 0px;
         width: 300px;">
           <div class="input-group">
@@ -69,14 +106,14 @@
         </div>
 
       </div>
-        <dov class="col-md-12">
+        <div class="col-md-12 mt-5">
           <table class="table table-striped">
             <thead class="thead-inverse">
               <tr>
-                <th>ID</th>
+                <th>Nom</th>
                 <th>Site</th>
                 <th>Localisation</th>
-                <th>Prix</th>
+                <th>Prix </th>
                 <th>Pieces</th>
                 <th>Superficie</th>
                 <th>Description</th>
@@ -86,8 +123,8 @@
             <tbody class="table-striped">
               {% for bien in biens_immobiliers %}
               <tr>
-                <td>{{ bien.id }}</td>
-                <td>{{ bien.site }}</td>
+                <td>{{ bien.nom }}</td>
+                <td><a href="{{ bien.site }}" class="btn btn-link" target="_blank">URL</a></td>
                 <td>{{ bien.localisation }}</td>
                 <td>{{ bien.prix }}</td>
                 <td>{{ bien.pieces }}</td>
@@ -98,7 +135,7 @@
               {% endfor %}
             </tbody>
           </table>
-        </dov>
+        </div>
       </div>
     </div>
     <script

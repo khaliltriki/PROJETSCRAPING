@@ -15,6 +15,7 @@ class Migration(migrations.Migration):
             name='BiensImmobilier',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('nom', models.CharField(blank=True, max_length=255, null=True)),
                 ('site', models.CharField(blank=True, max_length=255, null=True)),
                 ('localisation', models.CharField(blank=True, max_length=255, null=True)),
                 ('prix', models.CharField(blank=True, max_length=255, null=True)),

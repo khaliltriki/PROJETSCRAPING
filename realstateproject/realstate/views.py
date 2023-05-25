@@ -5,6 +5,9 @@ import requests
 from bs4 import BeautifulSoup
 
 # Create your views here.
+def home(request):
+    return render(request, 'home.html')
+
 def index(request):
     biens_immobiliers = BiensImmobilier.objects.order_by('-id').all()
     return render(request, 'index.html', {'biens_immobiliers': biens_immobiliers})
@@ -21,7 +24,7 @@ def scrap(request):
     soup1 = BeautifulSoup(response1.content, "html.parser")
     data1 = soup1.find_all('div', class_='col-12 layout-list')
 
-    # Collecter les données du site https://www.menzili.tn/
+    # Collecter les données du site https://www.tunisie-annonce.com/
     url2 = 'http://www.tunisie-annonce.com/AnnoncesImmobilier.asp?rech_cod_cat=1&rech_cod_rub=101&rech_cod_typ=10101&rech_cod_sou_typ=&rech_cod_pay=TN&rech_cod_reg=&rech_cod_vil=&rech_cod_loc=&rech_prix_min=&rech_prix_max=&rech_surf_min=&rech_surf_max=&rech_age=&rech_photo=&rech_typ_cli=&rech_order_by=31&rech_page_num='+str(page)
     response2 = requests.get(url2)
     soup2 = BeautifulSoup(response2.content, 'html.parser')
@@ -49,8 +52,9 @@ def scrap(request):
            type = "N/A"
         #site = 'https://www.immobilier.com.tn/'
         site = item1.find('a', class_='annonce-card annonce-square').get('href')
+        nom='immobilier'
          # Ajouter les données dans la table  BiensImmobilier
-        BiensImmobilier.objects.create(site=site, localisation=localisation, prix=prix, pieces=pieces, superficie=superficie, description=description, type=type, page=page)
+        BiensImmobilier.objects.create(nom=nom, site=site, localisation=localisation, prix=prix, pieces=pieces, superficie=superficie, description=description, type=type, page=page)
     
 
     for item2 in data2:
@@ -65,13 +69,40 @@ def scrap(request):
         superficie = "Non"
         description=item2.contents[5].text.strip()
         site1 =item2.contents[5].find('a').get('href')
-        site = "https://www.tunisie-annonce.com/"+site1
-        BiensImmobilier.objects.create(site=site, localisation=localisation, prix=prix, pieces=pieces, superficie=superficie, description=description, type=type, page=page)
+        site = "http://www.tunisie-annonce.com/"+site1
+        nom='tunisie-annonce'
+        BiensImmobilier.objects.create(nom=nom, site=site, localisation=localisation, prix=prix, pieces=pieces, superficie=superficie, description=description, type=type, page=page)
  
     biens_immobiliers = BiensImmobilier.objects.order_by('-id').all()
     return render(request, 'index.html', {'biens_immobiliers': biens_immobiliers})
 
 def search(request):
     query = request.POST.get('query')
-    biens_immobiliers = BiensImmobilier.objects.filter(Q(site__contains=query)|Q(localisation__contains=query)|Q(prix__contains=query)|Q(pieces__contains=query)|Q(superficie__contains=query)|Q(description__contains=query)|Q(type__contains=query))
+    if query.isnumeric():
+        print("here")
+        biens_immobiliers = BiensImmobilier.objects.filter(Q(nom__contains=query)|Q(localisation__contains=query)|Q(prix__contains=float(query))|Q(pieces__contains=query)|Q(superficie__contains=query)|Q(description__contains=query)|Q(type__contains=query))
+    else:
+        print("here 2")
+
+        biens_immobiliers = BiensImmobilier.objects.filter(Q(nom__contains=query)|Q(localisation__contains=query)|Q(pieces__contains=query)|Q(superficie__contains=query)|Q(description__contains=query)|Q(type__contains=query))
+
     return render(request, 'index.html', {'biens_immobiliers': biens_immobiliers})
+
+def sortbyprice(request):
+    biens_immobiliers = BiensImmobilier.objects.all().order_by('prix')
+    return render(request, 'index.html', {'biens_immobiliers': biens_immobiliers})
+
+def sortby_price(request):
+    biens_immobiliers = BiensImmobilier.objects.all().order_by('-prix')
+    return render(request, 'index.html', {'biens_immobiliers': biens_immobiliers})
+
+def sup_inf(request):
+    if 'inf' in request.POST:
+        query = request.POST.get('query')
+        biens_immobiliers = BiensImmobilier.objects.filter(prix__lt=query)
+        return render(request, 'index.html', {'biens_immobiliers': biens_immobiliers})
+
+    else:
+        query = request.POST.get('query')
+        biens_immobiliers = BiensImmobilier.objects.filter(prix__gt=query)
+        return render(request, 'index.html', {'biens_immobiliers': biens_immobiliers})

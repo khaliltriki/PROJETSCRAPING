@@ -20,8 +20,11 @@ from realstate import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    path('', views.home, name='home'),
+    path('index', views.index, name='index'),
     path('search', views.search, name='search'),
-    path('scrap', views.scrap, name='scrap')
-    
+    path('scrap', views.scrap, name='scrap'),
+    path('sortbyprice', views.sortbyprice, name='sortbyprice'),
+    path('sortby_price', views.sortby_price, name='sortby_price'),
+    path('sup_inf', views.sup_inf, name='sup'),
 ]
